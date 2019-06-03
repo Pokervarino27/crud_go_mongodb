@@ -6,27 +6,31 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/bson/primitive"
-	"github.com/mongodb/mongo-go-driver/mongo"
-	"github.com/mongodb/mongo-go-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	// "github.com/mongodb/mongo-go-driver/bson"
+	// "github.com/mongodb/mongo-go-driver/bson/primitive"
+	// "github.com/mongodb/mongo-go-driver/mongo"
+	// "github.com/mongodb/mongo-go-driver/mongo/options"
 )
 
 func getClient() *mongo.Client {
-	client, err := mongo.Connect(context.TODO(), "mongodb://localhost:27017")
-
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		log.Fatal(err)
+		return nil
 	}
-	//Chequea la conexión
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+
 	err = client.Ping(context.TODO(), nil)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	fmt.Println("Connected to Mongo")
 	return client
 }
