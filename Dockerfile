@@ -4,7 +4,7 @@
 FROM golang:1.10
 
 #Administrator
-LABEL maintainer="Diego Comihual <dcomihual@imaginex.cl>"
+LABEL maintainer="Diego Comihual"
 
 #Set the current working directory insider the container
 WORKDIR $GOPATH/src/github.com/pokervarino27/crud_go_mongodb
